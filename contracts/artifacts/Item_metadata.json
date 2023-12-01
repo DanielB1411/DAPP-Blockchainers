@@ -148,19 +148,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "currentOwner",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "forSale",
 				"outputs": [
 					{
@@ -339,11 +326,11 @@
 			]
 		},
 		"contracts/Item.sol": {
-			"keccak256": "0x685011e0d5f69cde3a22b308e062576db71ad68f2e01e9bca806a9a194fdda85",
+			"keccak256": "0x3267e9426972f46dda8847c51a660e4d1e06ca859363ff2208cf2d70566961e6",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://2a6c13992cf4550ff1a038dd703ab03d0de0116209f17b73e24fd146cb34c262",
-				"dweb:/ipfs/QmY1ZRmF41NX7YsfoNViLakh7Zvp6j9u56oXqCwyrkPccc"
+				"bzz-raw://d5070bd8a557d718bf130d3d6c594e0fc7f9bbbe6ec84858f185c9c206adef5f",
+				"dweb:/ipfs/QmVapvMUkwWaFnZSq36qnvo6Pvjg9BNdETXBddCVuYCigQ"
 			]
 		}
 	},

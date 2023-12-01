@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract Item is Ownable {
     // Variables
     string public itemName;
-    address public currentOwner;
     uint256 public price;
     bool public forSale;
 
@@ -20,7 +19,6 @@ contract Item is Ownable {
     constructor(string memory _itemName, uint256 _initialPrice) Ownable(msg.sender){
         itemName = _itemName;
         price = _initialPrice;
-        currentOwner = msg.sender;
         forSale = false;
     }
 
@@ -28,7 +26,13 @@ contract Item is Ownable {
         //require(msg.sender == this.currentOwner);
         forSale = false;
         transferOwnership(newOwner);
+
+        
+        //also is there really a need for currentOwner if we are using the Ownable module? removed it and used owner() instead each time.
     }
+
+
+
 
     function changePrice(uint256 _newPrice) external onlyOwner {
         price = _newPrice;
@@ -44,17 +48,15 @@ contract Item is Ownable {
         require(forSale, "Item is not for sale");
         require(msg.value >= price, "Insufficient funds");
 
-        address payable previousOwner = payable(currentOwner);
+        address payable previousOwner = payable(owner());
         //transferOwnership(address(this));
         //this.transferOwnership(msg.sender);
         forSale = false;
-
         previousOwner.transfer(price);
 
-        address previousOwnerAddress = currentOwner;
-        currentOwner = msg.sender;
-
-        emit ItemTransferred(previousOwnerAddress, msg.sender, price);
+        //need to transfer ownership but cant because it needs to be done by ownable! :(
+        //transferOwnership(msg.sender);
+        emit ItemTransferred(owner(), msg.sender, price);
     }
 
     function getItemDetails() external view returns (
@@ -63,6 +65,6 @@ contract Item is Ownable {
         uint256,
         bool
     ) {
-        return (itemName, currentOwner, price, forSale);
+        return (itemName, owner(), price, forSale);
     }
 }
