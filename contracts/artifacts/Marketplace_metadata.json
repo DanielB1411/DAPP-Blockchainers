@@ -322,7 +322,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Marketplace_Advanced.sol": "Marketplace"
+			"contracts/Marketplace.sol": "Marketplace"
 		},
 		"evmVersion": "shanghai",
 		"libraries": {},
@@ -432,7 +432,7 @@
 				"dweb:/ipfs/QmXcsGpRXBPb3S1kQ5cyt21UDBf7irkuwZMFv64gtbENy6"
 			]
 		},
-		"contracts/Marketplace_Advanced.sol": {
+		"contracts/Marketplace.sol": {
 			"keccak256": "0xdb23d96c1991c1f7ff38744321077b2cf9cff64c1648888007f8ba7a656cdabc",
 			"license": "MIT",
 			"urls": [

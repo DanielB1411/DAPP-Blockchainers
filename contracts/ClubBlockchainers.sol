@@ -4,12 +4,12 @@ pragma solidity ^0.8.13;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract BlockchainersMarketplace is ERC721URIStorage {
+contract ClubBlockchainers is ERC721URIStorage {
   uint256 private _tokenIds;
   address marketplaceContract;
   event NFTMinted(uint256);
 
-  constructor(address _marketplaceContract) ERC721("Blockchainers Marketplace", "BM") {
+  constructor(address _marketplaceContract) ERC721("Club Blockchainers", "CB") {
     marketplaceContract = _marketplaceContract;
   }
 
