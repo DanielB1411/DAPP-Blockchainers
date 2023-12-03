@@ -647,7 +647,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Marketplace_Simple.sol": "BoredPetsNFT"
+			"contracts/Marketplace_Simple.sol": "BlockchainersMarketplace"
 		},
 		"evmVersion": "shanghai",
 		"libraries": {},
@@ -782,11 +782,11 @@
 			]
 		},
 		"contracts/Marketplace_Simple.sol": {
-			"keccak256": "0x5170eb480b40eb74157d717b407811de56e6252aba35b76dc7f71c3e94961851",
+			"keccak256": "0x71e9cde0403b52481b9056be11537ab55a86f7d4af4313789f7769dff7d46fac",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://9424181614432c6fcaab9e07d6fb1a104e8cfac268b61a9a4cb3181b7aef288c",
-				"dweb:/ipfs/QmUE1o4iLCdy3P7JHu1cHVswZt1PyhsyZJJRUvXYynz1cj"
+				"bzz-raw://a174becfd82412f620068a7ce3c322f1a182cfe896b59ba7488918c406e2820b",
+				"dweb:/ipfs/Qmdv9GgCqxifGudBAJ4GQGetS6bGrHmmpE6Yf5EEpR9n4m"
 			]
 		}
 	},
