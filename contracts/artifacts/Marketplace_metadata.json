@@ -21,7 +21,7 @@
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "nftContract",
+						"name": "itemContract",
 						"type": "address"
 					},
 					{
@@ -49,7 +49,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "NFTListed",
+				"name": "ItemListed",
 				"type": "event"
 			},
 			{
@@ -58,7 +58,93 @@
 					{
 						"indexed": false,
 						"internalType": "address",
-						"name": "nftContract",
+						"name": "itemContract",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "duration",
+						"type": "uint256"
+					}
+				],
+				"name": "ItemListedRent",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "itemContract",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "duration",
+						"type": "uint256"
+					}
+				],
+				"name": "ItemRented",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "itemContract",
 						"type": "address"
 					},
 					{
@@ -86,7 +172,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "NFTSold",
+				"name": "ItemSold",
 				"type": "event"
 			},
 			{
@@ -106,7 +192,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_nftContract",
+						"name": "_itemContract",
 						"type": "address"
 					},
 					{
@@ -115,20 +201,20 @@
 						"type": "uint256"
 					}
 				],
-				"name": "buyNft",
+				"name": "buyItem",
 				"outputs": [],
 				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
 				"inputs": [],
-				"name": "getListedNfts",
+				"name": "getListedItems",
 				"outputs": [
 					{
 						"components": [
 							{
 								"internalType": "address",
-								"name": "nftContract",
+								"name": "itemContract",
 								"type": "address"
 							},
 							{
@@ -155,9 +241,19 @@
 								"internalType": "bool",
 								"name": "listed",
 								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "rentable",
+								"type": "bool"
+							},
+							{
+								"internalType": "uint256",
+								"name": "duration",
+								"type": "uint256"
 							}
 						],
-						"internalType": "struct Marketplace.NFT[]",
+						"internalType": "struct Marketplace.Item[]",
 						"name": "",
 						"type": "tuple[]"
 					}
@@ -167,13 +263,13 @@
 			},
 			{
 				"inputs": [],
-				"name": "getMyListedNfts",
+				"name": "getMyItems",
 				"outputs": [
 					{
 						"components": [
 							{
 								"internalType": "address",
-								"name": "nftContract",
+								"name": "itemContract",
 								"type": "address"
 							},
 							{
@@ -200,9 +296,19 @@
 								"internalType": "bool",
 								"name": "listed",
 								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "rentable",
+								"type": "bool"
+							},
+							{
+								"internalType": "uint256",
+								"name": "duration",
+								"type": "uint256"
 							}
 						],
-						"internalType": "struct Marketplace.NFT[]",
+						"internalType": "struct Marketplace.Item[]",
 						"name": "",
 						"type": "tuple[]"
 					}
@@ -212,13 +318,13 @@
 			},
 			{
 				"inputs": [],
-				"name": "getMyNfts",
+				"name": "getMyListedItems",
 				"outputs": [
 					{
 						"components": [
 							{
 								"internalType": "address",
-								"name": "nftContract",
+								"name": "itemContract",
 								"type": "address"
 							},
 							{
@@ -245,9 +351,19 @@
 								"internalType": "bool",
 								"name": "listed",
 								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "rentable",
+								"type": "bool"
+							},
+							{
+								"internalType": "uint256",
+								"name": "duration",
+								"type": "uint256"
 							}
 						],
-						"internalType": "struct Marketplace.NFT[]",
+						"internalType": "struct Marketplace.Item[]",
 						"name": "",
 						"type": "tuple[]"
 					}
@@ -259,7 +375,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_nftContract",
+						"name": "_itemContract",
 						"type": "address"
 					},
 					{
@@ -273,7 +389,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "listNft",
+				"name": "listItem",
 				"outputs": [],
 				"stateMutability": "payable",
 				"type": "function"
@@ -282,7 +398,66 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_nftContract",
+						"name": "_itemContract",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_tokenId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_price",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rentSeconds",
+						"type": "uint256"
+					}
+				],
+				"name": "listItemForRent",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_tokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "recallItem",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_itemContract",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_tokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "rentItem",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_itemContract",
 						"type": "address"
 					},
 					{
@@ -296,7 +471,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "resellNft",
+				"name": "resellItem",
 				"outputs": [],
 				"stateMutability": "payable",
 				"type": "function"
@@ -322,7 +497,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Marketplace.sol": "Marketplace"
+			"contracts/NewMarketplace.sol": "Marketplace"
 		},
 		"evmVersion": "shanghai",
 		"libraries": {},
@@ -432,12 +607,21 @@
 				"dweb:/ipfs/QmXcsGpRXBPb3S1kQ5cyt21UDBf7irkuwZMFv64gtbENy6"
 			]
 		},
+<<<<<<< HEAD
 		"contracts/Marketplace.sol": {
 			"keccak256": "0x3cee90eab81f1a31e249911aa05ac13a716311353010d035aa3725480b288021",
 			"license": "MIT",
 			"urls": [
 				"bzz-raw://2930275b0e0bda916063849526e254d8660b21892f8638c2bfb319a6370084d3",
 				"dweb:/ipfs/QmNRSe1ftiUgAJQYGDutddFaPijCGqJL6hTq1FMpZEzwZZ"
+=======
+		"contracts/NewMarketplace.sol": {
+			"keccak256": "0x7d0746371de4d982fd2614a700c42119ddfc54f67ecbb19abfb9307c8fe6f08b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://31c234617658f1af7f74a5f04a483e36649a78c2de3ea7734e34708148698ffa",
+				"dweb:/ipfs/QmPtob1EqKFwtgaNoGAeendz79vggdiLvJNQNhmLj8xDR5"
+>>>>>>> refs/remotes/origin/main
 			]
 		}
 	},
