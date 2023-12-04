@@ -433,11 +433,11 @@
 			]
 		},
 		"contracts/Marketplace.sol": {
-			"keccak256": "0xdb23d96c1991c1f7ff38744321077b2cf9cff64c1648888007f8ba7a656cdabc",
+			"keccak256": "0x3cee90eab81f1a31e249911aa05ac13a716311353010d035aa3725480b288021",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://410de3da0380fefdaba201feaee4181f5c935a727773fba2d89ebc7191239303",
-				"dweb:/ipfs/QmXhtmgziU6vsdYZZAyAfrtMBE9BmJjwG1kAsLMjgoYuVY"
+				"bzz-raw://2930275b0e0bda916063849526e254d8660b21892f8638c2bfb319a6370084d3",
+				"dweb:/ipfs/QmNRSe1ftiUgAJQYGDutddFaPijCGqJL6hTq1FMpZEzwZZ"
 			]
 		}
 	},

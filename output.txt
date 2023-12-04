@@ -1,0 +1,96 @@
+
+Compiling your contracts...
+===========================
+> Compiling @openzeppelin\contracts\access\Ownable.sol
+> Compiling @openzeppelin\contracts\interfaces\IERC165.sol
+> Compiling @openzeppelin\contracts\interfaces\IERC4906.sol
+> Compiling @openzeppelin\contracts\interfaces\IERC721.sol
+> Compiling @openzeppelin\contracts\interfaces\draft-IERC6093.sol
+> Compiling @openzeppelin\contracts\token\ERC721\ERC721.sol
+> Compiling @openzeppelin\contracts\token\ERC721\IERC721.sol
+> Compiling @openzeppelin\contracts\token\ERC721\IERC721Receiver.sol
+> Compiling @openzeppelin\contracts\token\ERC721\extensions\ERC721URIStorage.sol
+> Compiling @openzeppelin\contracts\token\ERC721\extensions\IERC721Metadata.sol
+> Compiling @openzeppelin\contracts\utils\Context.sol
+> Compiling @openzeppelin\contracts\utils\ReentrancyGuard.sol
+> Compiling @openzeppelin\contracts\utils\Strings.sol
+> Compiling @openzeppelin\contracts\utils\introspection\ERC165.sol
+> Compiling @openzeppelin\contracts\utils\introspection\IERC165.sol
+> Compiling @openzeppelin\contracts\utils\math\Math.sol
+> Compiling @openzeppelin\contracts\utils\math\SignedMath.sol
+> Compiling .\contracts\ClubBlockchainers.sol
+> Compiling .\contracts\Item.sol
+> Compiling .\contracts\Marketplace.sol
+> Artifacts written to C:\Users\dbbal\Desktop\Singapore\blockchain\DAPP-Blockchainers\build\contracts
+> Compiled successfully using:
+   - solc: 0.8.20+commit.a1b79de6.Emscripten.clang
+
+
+Migrations dry-run (simulation)
+===============================
+> Network name:    'goerli-fork'
+> Network id:      5
+> Block gas limit: 30000000 (0x1c9c380)
+
+
+1_initial_item.js
+=================
+
+   Replacing 'Marketplace'
+   -----------------------
+   > block number:        10155747
+   > block timestamp:     1701686963
+   > account:             0xbA9588aC07D776Bf5a454064bF9278Ad8B31eE63
+   > balance:             1.052207024156288565
+   > gas used:            1536815 (0x17732f)
+   > gas price:           2.500000021 gwei
+   > value sent:          0 ETH
+   > total cost:          0.003842037532273115 ETH
+
+   -------------------------------------
+   > Total cost:     0.003842037532273115 ETH
+
+Summary
+=======
+> Total deployments:   1
+> Final cost:          0.003842037532273115 ETH
+
+
+
+
+Starting migrations...
+======================
+> Network name:    'goerli'
+> Network id:      5
+> Block gas limit: 30000000 (0x1c9c380)
+
+
+1_initial_item.js
+=================
+
+   Replacing 'Marketplace'
+   -----------------------
+   > transaction hash:    0x5b9ccf69f19aae4f8296637da64cf8b0ea3ef790997564b151d989f5afe35adb
+   > Blocks: 1            Seconds: 45
+   > contract address:    0x715B8a459a3AF60Bf99090BaBe57D75451E6f8c3
+   > block number:        10155753
+   > block timestamp:     1701687012
+   > account:             0xbA9588aC07D776Bf5a454064bF9278Ad8B31eE63
+   > balance:             1.05220702415782538
+   > gas used:            1536815 (0x17732f)
+   > gas price:           2.50000002 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0038420375307363 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:     0.0038420375307363 ETH
+
+Summary
+=======
+> Total deployments:   1
+> Final cost:          0.0038420375307363 ETH
+
+
+
+C:\Users\dbbal\Desktop\Singapore\blockchain\DAPP-Blockchainers>

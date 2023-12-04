@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+</head>
+
+<style>
+    .navbutton {
+    vertical-align: middle;
+    display: inline-block;
+    border-radius: 4px;
+    background-color: #222222;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 30px;
+    padding: 5px;
+    width: 200px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 10px 5px 10px 5px;
+  }
+  .navbutton span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: .5s;
+}
+
+.navbutton span:after {
+  content: '»';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -15px;
+  transition: 0.5s;
+}
+
+.navbutton:hover span {
+  padding-right: 25px;
+  text-decoration: none;
+  color: #AAAAAA;
+}
+
+.navbutton:hover span:after {
+  opacity: 1;
+  right: 0;
+  color: #AAAAAA;
+}
+
+.container {
+  margin-top:20px;
+  margin-bottom:20px;
+}
+
+#title {
+  margin-right: 325px;
+  text-align:right;
+  
+}
+
+.jumbotron {
+  
+  background-color: #E5E5E5;
+  width: 100%;
+  height: 500px;
+}
+
+.page-header {
+  margin: 5px;
+}
+
+
+
+
+
+body {
+  color: #ECEFF1;
+  background: #212121;
+  padding-top: 3rem;
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  height: 50%;
+  bottom: -40px;
+  position: relative;
+
+}
+
+.control label {
+  color: #03A9F4;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.1rem;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.control input {
+  outline: none;
+  width: 100%;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border-radius: 0.3rem;
+  background: #ECEFF1;
+  color: #212121 !important;
+  font-size: 1.6rem;
+  font-weight: 700;
+  border: 0.2rem solid transparent;
+  transition: all 300ms ease;
+}
+
+.button {
+  display: block;
+  background: #8BC34A;
+  width: 100%;
+  border: 0;
+  padding: 1.5rem;
+  margin-top: 2.5rem;
+  color: #ECEFF1;
+  font-weight: 700;
+  font-size: 1.6rem;
+  letter-spacing: 0.1rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 0.3rem;
+  text-align: center;
+}
+
+.button:hover {
+  background: #03A9F4;
+}
+
+#hname {
+
+color: #000; /* Black text */
+padding: 20px;
+text-align: center;
+position: relative;
+top: 150px;
+
+
+}
+
+#txinfo {
+  position: relative;
+  background-color: black;
+  height: 50%;
+  width: 50%;
+  left: 830px;
+  bottom: 160px;
+}
+
+
+
+
+
+
+
+
+</style>
+<body>
+  <div class="container">
+    <h1 id="title" class="col-sm-4"><b>Item Marketplace</b></h1>
+    <button class="navbutton" onclick="showCreateWindow()"><span>Create Item</span></button>
+    <button class="navbutton" onclick="showBrowseWindow()"><span>Browse</span></button>
+    <button class="navbutton" onclick="showPortfolioWindow()"><span>Portfolio</span></button>
+
+  </div>
+
+  <div class="page-header"></div>
+
+  <div class="container">
+    <div class="jumbotron">
+      
+         
+      <header id= "hname">
+        <h1>CRYPTO bro platform</h1>
+        <p>Your go-to platform for all things crypto</p>
+      </header>
+
+
+
+
+    </div>
+
+
+
+  </div>
+
+  <script>
+
+    function checkServerOutputFile() {
+      return new Promise((resolve, reject) => {
+        const check = () => {
+          fetch('/checkOutputFile')
+            .then(response => response.json())
+            .then(data => {
+              if (data.status === 'success') {
+                console.log('Desired line found on the server');
+                console.log('Transaction Hash:', data.info.transactionHash);
+                console.log('Contract Address:', data.info.contractAddress);
+                console.log('Total Cost:', data.info.totalCost);
+                resolve(data.info); // Resolve with the extracted information
+              } else {
+                console.log('Line not found on the server. Retrying in 5 seconds...');
+                setTimeout(check, 5000); // Retry after 5 seconds
+              }
+            })
+            .catch(error => {
+              console.error('Error checking server output file:', error);
+              console.log('Retrying in 5 seconds...');
+              setTimeout(check, 5000); // Retry after 5 seconds
+            });
+        };
+
+        // Start the initial check
+        check();
+      });
+    }
+
+
+
+    function showPortfolioWindow() {
+      // Assuming there is only one element with the class "jumbotron"
+      let jumbotronElement = document.querySelector('.jumbotron');
+
+      // Check if the element is found
+      if (jumbotronElement) {
+          jumbotronElement.innerHTML = `
+              <header id="hname">
+                  <h1>CRYPTO bro platform</h1>
+                  <p>Your go-to platform for all things crypto</p>
+              </header>
+          `;
+        }
+    }
+
+            
+  function showCreateWindow() {
+      // Assuming there is only one element with the class "jumbotron"
+      let jumbotronElement = document.querySelector('.jumbotron');
+
+      // Check if the element is found
+      if (jumbotronElement) {
+        jumbotronElement.innerHTML = `
+          <div class="row control overhide">
+            <div class="col-1-4 pad-right">
+              <label for="adress">Address..</label>
+              <input id="adress" type="text" maxlength="45" placeholder="required" data-validate="blankName" />
+              <label for="name">Name of Item?</label>
+              <input id="name" type="text" data-validate="clampLength" />
+              <div id="create-item" class="button" onclick="createItem()" ><i class="icon-folder-plus"></i> Create</div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+
+    function showBrowseWindow() {
+    // Assuming there is only one element with the class "jumbotron"
+    let jumbotronElement = document.querySelector('.jumbotron');
+
+    // Check if the element is found
+    if (jumbotronElement) {
+        jumbotronElement.innerHTML = `
+            <header id="hname">
+                <h1>CRYPTO bro platform</h1>
+                <p>Your go-to platform for all things crypto</p>
+            </header>
+        `;
+    }
+}
+
+
+   
+
+    async function createItem() {
+      // Get input values
+      var address = document.getElementById('adress').value;
+      var itemName = document.getElementById('name').value;
+
+      // Prepare data to be sent in the request body
+      var requestData = {
+        address: address,
+        itemName: itemName
+      };
+
+      try {
+        // Send a POST request to your Express server
+        const response = await fetch('/createItem', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        // Handle success response
+        console.log('Item created successfully:', data);
+
+        const txInfo = await checkServerOutputFile();
+
+        let jumbotronElement = document.querySelector('.jumbotron');
+        jumbotronElement.innerHTML += `
+          <div id = "txinfo">
+            <p>Transaction Hash: ${txInfo.transactionHash}</p>
+            <p>Contract Address: ${txInfo.contractAddress}</p>
+            <p>Total Cost: ${txInfo.totalCost}</p>
+          </div>`;
+
+        // You can add additional logic here based on the response
+      } catch (error) {
+        // Handle error
+        console.error('Error creating item:', error);
+        // You can add additional error handling logic here
+      }
+    }
+
+
+
+
+    
+  </script>
+</body>
+
+
+</html>

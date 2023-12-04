@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 contract Marketplace is ReentrancyGuard {
   uint256 private _nftsSold;
   uint256 private _nftCount;
-  uint256 public LISTING_FEE = 0.0001 ether;
+  uint256 public LISTING_FEE = 0;
   address payable private _marketOwner;
   mapping(uint256 => NFT) private _idToNFT;
   struct NFT {
