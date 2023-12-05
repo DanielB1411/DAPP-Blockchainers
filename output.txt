@@ -21,6 +21,22 @@ Compiling your contracts...
 > Compiling .\contracts\ClubBlockchainers.sol
 > Compiling .\contracts\Item.sol
 > Compiling .\contracts\Marketplace.sol
+> Compiling .\contracts\NewMarketplace.sol
+> Compiling .\contracts\Time.sol
+> Compilation warnings encountered:
+
+    Warning: This declaration shadows an existing declaration.
+ --> project:/contracts/Time.sol:6:5:
+  |
+6 |     uint public Time;
+  |     ^^^^^^^^^^^^^^^^
+Note: The shadowed declaration is here:
+ --> project:/contracts/Time.sol:4:1:
+  |
+4 | contract Time{
+  | ^ (Relevant source part starts here and spans across multiple lines).
+
+
 > Artifacts written to C:\Users\dbbal\Desktop\Singapore\blockchain\DAPP-Blockchainers\build\contracts
 > Compiled successfully using:
    - solc: 0.8.20+commit.a1b79de6.Emscripten.clang
@@ -36,24 +52,24 @@ Migrations dry-run (simulation)
 1_initial_item.js
 =================
 
-   Replacing 'Marketplace'
-   -----------------------
-   > block number:        10155747
-   > block timestamp:     1701686963
+   Deploying 'ClubBlockchainers'
+   -----------------------------
+   > block number:        10155855
+   > block timestamp:     1701688591
    > account:             0xbA9588aC07D776Bf5a454064bF9278Ad8B31eE63
-   > balance:             1.052207024156288565
-   > gas used:            1536815 (0x17732f)
-   > gas price:           2.500000021 gwei
+   > balance:             1.041449684097463224
+   > gas used:            2090942 (0x1fe7be)
+   > gas price:           2.500000013 gwei
    > value sent:          0 ETH
-   > total cost:          0.003842037532273115 ETH
+   > total cost:          0.005227355027182246 ETH
 
    -------------------------------------
-   > Total cost:     0.003842037532273115 ETH
+   > Total cost:     0.005227355027182246 ETH
 
 Summary
 =======
 > Total deployments:   1
-> Final cost:          0.003842037532273115 ETH
+> Final cost:          0.005227355027182246 ETH
 
 
 
@@ -68,28 +84,28 @@ Starting migrations...
 1_initial_item.js
 =================
 
-   Replacing 'Marketplace'
-   -----------------------
-   > transaction hash:    0x5b9ccf69f19aae4f8296637da64cf8b0ea3ef790997564b151d989f5afe35adb
-   > Blocks: 1            Seconds: 45
-   > contract address:    0x715B8a459a3AF60Bf99090BaBe57D75451E6f8c3
-   > block number:        10155753
-   > block timestamp:     1701687012
+   Deploying 'ClubBlockchainers'
+   -----------------------------
+   > transaction hash:    0xdc6d26e1e5806796a935ebf1728bc5600d4dfb5dfc5fd1d95054e14c35d67404
+   > Blocks: 1            Seconds: 9
+   > contract address:    0x7ca6fc0E2be6fbD1262144157b7eD740856E90e8
+   > block number:        10155861
+   > block timestamp:     1701688608
    > account:             0xbA9588aC07D776Bf5a454064bF9278Ad8B31eE63
-   > balance:             1.05220702415782538
-   > gas used:            1536815 (0x17732f)
-   > gas price:           2.50000002 gwei
+   > balance:             1.041449684097463224
+   > gas used:            2090942 (0x1fe7be)
+   > gas price:           2.500000013 gwei
    > value sent:          0 ETH
-   > total cost:          0.0038420375307363 ETH
+   > total cost:          0.005227355027182246 ETH
 
    > Saving artifacts
    -------------------------------------
-   > Total cost:     0.0038420375307363 ETH
+   > Total cost:     0.005227355027182246 ETH
 
 Summary
 =======
 > Total deployments:   1
-> Final cost:          0.0038420375307363 ETH
+> Final cost:          0.005227355027182246 ETH
 
 
 

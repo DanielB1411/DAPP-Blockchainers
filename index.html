@@ -155,7 +155,26 @@ top: 150px;
 }
 
 
+.grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 20px;
+    }
 
+    /* Style for each box */
+    .box {
+      margin: 50px;
+      width: 72%;
+      height: 250px;
+      background-color: lightblue;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ccc;
+      font-weight: bold;
+      font-size: 16px;
+    }
 
 
 
@@ -190,6 +209,7 @@ top: 150px;
 
 
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.6.0/dist/web3.min.js"></script>
 
   <script>
 
@@ -231,11 +251,21 @@ top: 150px;
       // Check if the element is found
       if (jumbotronElement) {
           jumbotronElement.innerHTML = `
-              <header id="hname">
-                  <h1>CRYPTO bro platform</h1>
-                  <p>Your go-to platform for all things crypto</p>
-              </header>
-          `;
+        <div class="grid-container">
+    
+        <!-- Rows -->
+        <div class="box">1</div>
+        <div class="box">2</div>
+        <div class="box">3</div>
+
+        <div class="box">4</div>
+        <div class="box">5</div>
+        <div class="box">6</div>
+        <button class="navbutton" onclick="getAllListedItems()"><span>showall</span></button>
+
+        
+      </div>
+            `;
         }
     }
 
@@ -268,31 +298,65 @@ top: 150px;
     // Check if the element is found
     if (jumbotronElement) {
         jumbotronElement.innerHTML = `
-            <header id="hname">
-                <h1>CRYPTO bro platform</h1>
-                <p>Your go-to platform for all things crypto</p>
-            </header>
-        `;
+        <div class="grid-container">
+    
+        <!-- Rows -->
+        <div class="box">1</div>
+        <div class="box">2</div>
+        <div class="box">3</div>
+
+        <div class="box">4</div>
+        <div class="box">5</div>
+        <div class="box">6</div>
+
+        <div class="box">7</div>
+        <div class="box">8</div>
+        <div class="box">9</div>
+
+        <div class="box">10</div>
+        <div class="box">11</div>
+        <div class="box">12</div>
+
+        <div class="box">13</div>
+        <div class="box">14</div>
+        <div class="box">15</div>
+        
+      </div>
+            `;
     }
 }
 
 
-   
-
-    async function createItem() {
+async function getAllListedItems() {
       // Get input values
-      var address = document.getElementById('adress').value;
-      var itemName = document.getElementById('name').value;
+
+      try {
+        // Request account access if needed
+        await ethereum.request({ method: 'eth_requestAccounts' });
+        console.log("MetaMask is enabled!");
+      } catch (error) {
+        if (error.code === 4001) {
+          // User denied account access
+          console.log('User denied account access');
+          return;
+        } else {
+          // Handle other errors
+          console.error(error);
+          return;
+        }
+      }
+
+      const accounts = await ethereum.request({ method: 'eth_accounts' });
+      const userAddress = accounts[0];
 
       // Prepare data to be sent in the request body
       var requestData = {
-        address: address,
-        itemName: itemName
+        address: userAddress,
       };
 
       try {
         // Send a POST request to your Express server
-        const response = await fetch('/createItem', {
+        const response = await fetch('/getAllListedItems', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -306,25 +370,120 @@ top: 150px;
 
         const data = await response.json();
         // Handle success response
-        console.log('Item created successfully:', data);
-
-        const txInfo = await checkServerOutputFile();
-
-        let jumbotronElement = document.querySelector('.jumbotron');
-        jumbotronElement.innerHTML += `
-          <div id = "txinfo">
-            <p>Transaction Hash: ${txInfo.transactionHash}</p>
-            <p>Contract Address: ${txInfo.contractAddress}</p>
-            <p>Total Cost: ${txInfo.totalCost}</p>
-          </div>`;
-
-        // You can add additional logic here based on the response
+        console.log('Item found successfully:', data);
+        
+        console.log(data);
       } catch (error) {
         // Handle error
         console.error('Error creating item:', error);
         // You can add additional error handling logic here
       }
     }
+
+
+
+    
+  async function getItems() {
+        await fetch('/getItems')
+        .then(response => response.json())
+        .then(data => {
+            console.log("success" +data);
+            // Handle the response from the server
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle errors
+        });
+
+      
+    }
+
+
+   async function listItem(userAddress) {
+
+      var requestData = {
+          address: userAddress,
+          token: 2,
+          price:1
+        };
+
+
+      await fetch('/listItem', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        })
+      .then(response => response.json())
+      .then(data => {
+          console.log(data);
+          // Handle the response from the server
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          // Handle errors
+      });
+
+    
+   }
+
+   async function createItem() {
+      // Get input values
+      var address = document.getElementById('adress').value;
+      var itemName = document.getElementById('name').value;
+
+      try {
+        // Request account access if needed
+        await ethereum.request({ method: 'eth_requestAccounts' });
+        console.log("MetaMask is enabled!");
+      } catch (error) {
+        if (error.code === 4001) {
+          // User denied account access
+          console.log('User denied account access');
+          return;
+        } else {
+          // Handle other errors
+          console.error(error);
+          return;
+        }
+      }
+
+      const accounts = await ethereum.request({ method: 'eth_accounts' });
+      const userAddress = accounts[0];
+
+      // Prepare data to be sent in the request body
+      var requestData = {
+        address: userAddress,
+        itemName: itemName
+      };
+
+      try {
+        // Send a POST request to your Express server
+        const response = await fetch('/mintItem', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        // Handle success response
+        console.log('Item minted successfully:', data);
+        listItem(userAddress);
+        console.log(data);
+      } catch (error) {
+        // Handle error
+        console.error('Error creating item:', error);
+        // You can add additional error handling logic here
+      }
+    }
+
 
 
 
