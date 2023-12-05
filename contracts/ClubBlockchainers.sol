@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 contract ClubBlockchainers is ERC721URIStorage {
   uint256 private _tokenIds;
   address marketplaceContract;
-  event NFTMinted(uint256);
+  event ItemMinted(uint256);
 
   constructor(address _marketplaceContract) ERC721("Club Blockchainers", "CB") {
     marketplaceContract = _marketplaceContract;
@@ -19,6 +19,6 @@ contract ClubBlockchainers is ERC721URIStorage {
     _safeMint(msg.sender, newTokenId);
     _setTokenURI(newTokenId, _tokenURI);
     setApprovalForAll(marketplaceContract, true);
-    emit NFTMinted(newTokenId);
+    emit ItemMinted(newTokenId);
   }
 }
