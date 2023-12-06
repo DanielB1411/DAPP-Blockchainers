@@ -1,6 +1,7 @@
+marketAdress = '0x9FCf00AC037a8907658C98a258b60178B85c77bF'
 // 1_initial_item.js
 const ClubBlockchainers = artifacts.require("ClubBlockchainers");
 
 module.exports = function (deployer) {
-    deployer.deploy(ClubBlockchainers,"0xec7368f418Af3E003908b16f12a949ad45D8ab9e");
+    deployer.deploy(ClubBlockchainers,marketAdress);
 };

@@ -13,65 +13,23 @@ const port = 3000;
 app.use(express.json());
 
 
-const { ETH_DATA_FORMAT, DEFAULT_RETURN_FORMAT } = require("web3");
 // Replace 'YOUR_INFURA_API_KEY' with your actual Infura API key
 const infuraUrl = 'https://goerli.infura.io/v3/0c0d8ccd8f2a44af806fcba72afae84f';
 
 
 const web3 = new Web3(
-	new Web3.providers.HttpProvider(infuraUrl),
+	new Web3.providers.HttpProvider('http://localhost:8545'),
 );
 
 
 // adress of marketplace
-const contractAddress = '0x9d6bAd04445BABB19D72CE7308Df07B4439b0d4B';
+const contractAddress = '0x9FCf00AC037a8907658C98a258b60178B85c77bF';
 
 // address of clubblockchainers
-const mintAdress = '0x7ca6fc0E2be6fbD1262144157b7eD740856E90e8';
+const mintAdress = '0x85441eEc19222Ab6815bDF37C7266eddf2752F62';
 
 // Replace with your contract ABI
 const contractAbi = [
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_nftContract",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "buyNft",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_nftContract",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_tokenId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_price",
-				"type": "uint256"
-			}
-		],
-		"name": "listNft",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
@@ -88,7 +46,7 @@ const contractAbi = [
 			{
 				"indexed": false,
 				"internalType": "address",
-				"name": "nftContract",
+				"name": "itemContract",
 				"type": "address"
 			},
 			{
@@ -116,7 +74,7 @@ const contractAbi = [
 				"type": "uint256"
 			}
 		],
-		"name": "NFTListed",
+		"name": "ItemListed",
 		"type": "event"
 	},
 	{
@@ -125,7 +83,93 @@ const contractAbi = [
 			{
 				"indexed": false,
 				"internalType": "address",
-				"name": "nftContract",
+				"name": "itemContract",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "seller",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "duration",
+				"type": "uint256"
+			}
+		],
+		"name": "ItemListedRent",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "itemContract",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "seller",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "duration",
+				"type": "uint256"
+			}
+		],
+		"name": "ItemRented",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "itemContract",
 				"type": "address"
 			},
 			{
@@ -153,14 +197,210 @@ const contractAbi = [
 				"type": "uint256"
 			}
 		],
-		"name": "NFTSold",
+		"name": "ItemSold",
 		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "LISTING_FEE",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "_nftContract",
+				"name": "_itemContract",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "buyItem",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getListedItems",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "itemContract",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address payable",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"internalType": "address payable",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "listed",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "rentable",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "duration",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct Marketplace.Item[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getMyItems",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "itemContract",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address payable",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"internalType": "address payable",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "listed",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "rentable",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "duration",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct Marketplace.Item[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getMyListedItems",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "itemContract",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address payable",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"internalType": "address payable",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "listed",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "rentable",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "duration",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct Marketplace.Item[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_itemContract",
 				"type": "address"
 			},
 			{
@@ -174,157 +414,91 @@ const contractAbi = [
 				"type": "uint256"
 			}
 		],
-		"name": "resellNft",
+		"name": "listItem",
 		"outputs": [],
 		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "getListedNfts",
-		"outputs": [
+		"inputs": [
 			{
-				"components": [
-					{
-						"internalType": "address",
-						"name": "nftContract",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "tokenId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address payable",
-						"name": "seller",
-						"type": "address"
-					},
-					{
-						"internalType": "address payable",
-						"name": "owner",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "price",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "listed",
-						"type": "bool"
-					}
-				],
-				"internalType": "struct Marketplace.NFT[]",
-				"name": "",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getMyListedNfts",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "address",
-						"name": "nftContract",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "tokenId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address payable",
-						"name": "seller",
-						"type": "address"
-					},
-					{
-						"internalType": "address payable",
-						"name": "owner",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "price",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "listed",
-						"type": "bool"
-					}
-				],
-				"internalType": "struct Marketplace.NFT[]",
-				"name": "",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getMyNfts",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "address",
-						"name": "nftContract",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "tokenId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address payable",
-						"name": "seller",
-						"type": "address"
-					},
-					{
-						"internalType": "address payable",
-						"name": "owner",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "price",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "listed",
-						"type": "bool"
-					}
-				],
-				"internalType": "struct Marketplace.NFT[]",
-				"name": "",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "LISTING_FEE",
-		"outputs": [
+				"internalType": "address",
+				"name": "_itemContract",
+				"type": "address"
+			},
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "_tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "rentSeconds",
 				"type": "uint256"
 			}
 		],
-		"stateMutability": "view",
+		"name": "listItemForRent",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "recallItem",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_itemContract",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "rentItem",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_itemContract",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			}
+		],
+		"name": "resellItem",
+		"outputs": [],
+		"stateMutability": "payable",
 		"type": "function"
 	}
 ]
@@ -521,11 +695,11 @@ const mintAbi =[
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "_tokenId",
+				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "MetadataUpdate",
+		"name": "ItemMinted",
 		"type": "event"
 	},
 	{
@@ -534,11 +708,11 @@ const mintAbi =[
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "",
+				"name": "_tokenId",
 				"type": "uint256"
 			}
 		],
-		"name": "NFTMinted",
+		"name": "MetadataUpdate",
 		"type": "event"
 	},
 	{
@@ -843,100 +1017,19 @@ const minter = new web3.eth.Contract(mintAbi, mintAdress);
 
 
 
-app.post('/createItem', async (req, res) => {
-	try {
-		// Log specific values from the request body
-		console.log('Address:', req.body.address);
-		console.log('Item Name:', req.body.itemName);
-
-		console.log(process.env.PRIVATE_KEY);
-		const envData = fs.readFileSync('.env', 'utf8');
-		const envConfig = dotenv.parse(envData);
-		envConfig.PRIVATE_KEY = req.body.address;
-
-
-		
-		
-
-		res.status(200).json({ message: 'Item created successfully' });
-	} catch (error) {
-		console.error('Error creating item:', error);
-		res.status(500).json({ error: error.message }); // Send detailed error message in the response
-	}
-  });
-  
-//not in use
-app.get('/checkOutputFile', (req, res) => {
-	const fs = require('fs');
-
-	fs.readFile('output.txt', 'utf8', (err, data) => {
-		if (!err && data.includes('C:\\Users\\dbbal\\Desktop\\Singapore\\blockchain\\DAPP-Blockchainers>')) {
-		console.log('Desired line found in output.txt');
-
-		// Extract and return the relevant information
-		const relevantInfo = extractRelevantInfo(data);
-		res.json({ status: 'success', info: relevantInfo });
-		} else {
-		res.json({ status: 'waiting' });
-		}
-	});
-});
-//not in use
-function extractRelevantInfo(data) {
-
-const matches = data.match(/transaction hash:\s+(0x[a-fA-F0-9]+).*?contract address:\s+(0x[a-fA-F0-9]+).*?total cost:\s+(.*?) ETH/s);
-
-if (matches && matches.length === 4) {
-	const [, transactionHash, contractAddress, totalCost] = matches;
-	return { transactionHash, contractAddress, totalCost };
-}
-
-return null; // Return null if the information couldn't be extracted
-}
-
-
 app.post('/mintItem', async (req, res) => {
     try {
 
 
 		const userAddress = req.body.address;
-
-
-		const gasPrice = await web3.eth.getGasPrice();
-
-		const nonce = await web3.eth.getTransactionCount(userAddress);
-
-		const tx = {
+		const receipt = await minter.methods.mint(req.body.itemName).send({
 			from: userAddress,
-			to:mintAdress,
-			gasPrice: gasPrice,
 			gas: 1000000,
-			nonce: nonce,
-			data: minter.methods.mint(req.body.itemName).encodeABI(),
-		};
+			gasPrice: 10000000000,
+		});;
 
-		const signedTx = await web3.eth.accounts.signTransaction(tx, process.env.PRIVATE_KEY);
-		const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);if (receipt.status === '0x1') {
-			// the transaction was successful
-		  } else {
-			console.log(receipt.status);
-		  }
 		
-		receipt.transactionHash = receipt.transactionHash.toString();
-		receipt.blockNumber = receipt.blockNumber.toString();
-		receipt.gasUsed = receipt.gasUsed.toString();
-		receipt.cumulativeGasUsed = receipt.cumulativeGasUsed.toString();
-		receipt.status = receipt.status.toString();
-
-		console.log('Transaction Hash:', receipt.transactionHash);
-		console.log('Block Number:', receipt.blockNumber);
-		console.log('Gas Used:', receipt.gasUsed);
-		console.log('Cumulative Gas Used:', receipt.cumulativeGasUsed);
-		console.log('Contract Address:', receipt.contractAddress);
-		console.log('Status:', receipt.status);
-  
-
-
+		console.log('Transaction Hash: ' + receipt.transactionHash);
 
 
 
@@ -955,53 +1048,18 @@ app.post('/mintItem', async (req, res) => {
 // API endpoint to fetch the price
 app.post('/listItem', async (req, res) => {
 	try {
-
-		console.log("listing time:")
-
 		const userAddress = req.body.address;
-
-
-		const gasPrice = await web3.eth.getGasPrice();
-
-		const nonce = await web3.eth.getTransactionCount(userAddress);
-
-		
-		
-		const tx = {
+		const receipt = await marketplace.methods.listItem(mintAdress,req.body.token +3 + 2,req.body.price).send({
 			from: userAddress,
-			to: contractAddress,
-			gasPrice: gasPrice,
 			gas: 1000000,
-			nonce: nonce,
-			value: 0,
-			data: marketplace.methods.listNft(mintAdress,req.body.token,req.body.price).encodeABI(),
-		};
-		
-		console.log("signing");
-		const signedTx = await web3.eth.accounts.signTransaction(tx, process.env.PRIVATE_KEY);
-		const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);if (receipt.status === '0x1') {
-			// the transaction was successful
-		  } else {
-			console.log('Revert Reason:', receipt);
-
-		  }
+			gasPrice: 10000000000,
+			value:0
+		});;
 
 		
-		receipt.transactionHash = receipt.transactionHash.toString();
-		receipt.blockNumber = receipt.blockNumber.toString();
-		receipt.gasUsed = receipt.gasUsed.toString();
-		receipt.cumulativeGasUsed = receipt.cumulativeGasUsed.toString();
-		receipt.status = receipt.status.toString();
-
-		console.log('Transaction Hash:', receipt.transactionHash);
-		console.log('Block Number:', receipt.blockNumber);
-		console.log('Gas Used:', receipt.gasUsed);
-		console.log('Cumulative Gas Used:', receipt.cumulativeGasUsed);
-		console.log('Contract Address:', receipt.contractAddress);
-		console.log('Status:', receipt.status);
-  
-
+		console.log('Transaction Hash: ' + receipt.transactionHash);
         res.status(200).json({ 'transactionHash': receipt.transactionHash});
+
 		
       
 	} catch (error) {
@@ -1016,54 +1074,45 @@ app.post('/listItem', async (req, res) => {
 
   app.post('/getAllListedItems', async (req, res) => {
     try {
-        const userAddress = req.body.address;
-        console.log(userAddress);
+		console.log("1")
 
-        // Assuming you have the contract ABI loaded in `marketplaceAbi`
+		const result = await marketplace.methods.getListedItems().call();
+		let extracted_result = [];
+		for (i = 0; i < result.length;i++){
+			let item = [];
+			for (j = 0; j < 8;j++){
 
-        // Call the getListedNfts function
-        const gasPrice = await web3.eth.getGasPrice();
+			item.push(result[i][j].toString());
+			}
+			extracted_result.push(item);;
+		}
+		console.log("items" + extracted_result)
+        res.status(200).json({ items: extracted_result});  // Use "items" as the property name
 
-		const nonce = await web3.eth.getTransactionCount(userAddress);
+            } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
-		const tx = {
-			from: userAddress,
-			to:contractAddress,
-			gasPrice: gasPrice,
-			gas: 1000000,
-			nonce: nonce,
-			data: marketplace.methods.getMyListedNfts().encodeABI(),
-		};
+app.post('/getMyListedItems', async (req, res) => {
+    try {
 
-		const signedTx = await web3.eth.accounts.signTransaction(tx, process.env.PRIVATE_KEY);
-		const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);if (receipt.status === '0x1') {
-			// the transaction was successful
-		  } else {
-			console.log(receipt.status);
-		  }
-		
-		receipt.transactionHash = receipt.transactionHash.toString();
-		receipt.blockNumber = receipt.blockNumber.toString();
-		receipt.gasUsed = receipt.gasUsed.toString();
-		receipt.cumulativeGasUsed = receipt.cumulativeGasUsed.toString();
-		receipt.status = receipt.status.toString();
+		const result = await marketplace.methods.getListedItems().call();
+		let extracted_result = [];
+		for (i = 0; i < result.length;i++){
+			let item = [];
+			for (j = 0; j < 8;j++){
 
-		console.log('Transaction Hash:', receipt.transactionHash);
-		console.log('Block Number:', receipt.blockNumber);
-		console.log('Gas Used:', receipt.gasUsed);
-		console.log('Cumulative Gas Used:', receipt.cumulativeGasUsed);
-		console.log('Contract Address:', receipt.contractAddress);
-		console.log('Status:', receipt.status);
-  
+			item.push(result[i][j].toString());
+			}
+			if(item[2] == '0x5642153eCB7E5642893b73CFA57A7048b6ccfC15'){
+				extracted_result.push(item);;
+			}
+		}
+		console.log("items" + extracted_result)
+        res.status(200).json({ items: extracted_result});  // Use "items" as the property name
 
-
-
-
-
- 
-
-        res.status(200).json({ 'transactionHash': receipt.transactionHash});
-    } catch (error) {
+            } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
