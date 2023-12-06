@@ -1,147 +1,214 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract Marketplace is ReentrancyGuard {
-  uint256 private _nftsSold;
-  uint256 private _nftCount;
-  uint256 public LISTING_FEE = 0;
+  uint256 private _itemsSold;
+  uint256 private _itemCount;
+  uint256 public LISTING_FEE = 0 ether;
   address payable private _marketOwner;
-  mapping(uint256 => NFT) private _idToNFT;
-  struct NFT {
-    address nftContract;
+  mapping(uint256 => Item) private _idToItem;
+  mapping(uint256 => Rentable) private _idToRent;
+
+  struct Item {
+    address itemContract;
     uint256 tokenId;
     address payable seller;
     address payable owner;
     uint256 price;
     bool listed;
+    bool rentable;
+    uint256 duration;
   }
-  event NFTListed(
-    address nftContract,
-    uint256 tokenId,
-    address seller,
-    address owner,
-    uint256 price
+
+  struct Rentable{
+    address itemContract;
+    uint256 tokenId;
+    address payable seller;
+    address payable renter;
+    uint256 price;
+    uint256 duration;
+  }
+
+  event ItemListed(
+    address itemContract, uint256 tokenId, address seller, address owner, uint256 price
   );
-  event NFTSold(
-    address nftContract,
-    uint256 tokenId,
-    address seller,
-    address owner,
-    uint256 price
+
+  event ItemListedRent(
+    address itemContract, uint256 tokenId, address seller, address owner, uint256 price, uint256 duration
+  );
+
+  event ItemSold(
+    address itemContract, uint256 tokenId, address seller, address owner, uint256 price
+  );
+
+  event ItemRented(
+    address itemContract, uint256 tokenId, address seller, address owner, uint256 price, uint256 duration
   );
 
   constructor() {
     _marketOwner = payable(msg.sender);
   }
 
-  // List the NFT on the marketplace
-  function listNft(address _nftContract, uint256 _tokenId, uint256 _price) public payable nonReentrant {
-    require(_price > 0, "Price must be at least 1 wei");
-    require(msg.value == LISTING_FEE, "Not enough ether for listing fee");
+  // List item on marketplace
+  function listItem(address _itemContract, uint256 _tokenId, uint256 _price) public payable nonReentrant {
+    require(_price > 0, "Price must be greater than 0.");
+    require(msg.value == LISTING_FEE, "Please remove value before listing item, listing fee is free.");
 
-    IERC721(_nftContract).transferFrom(msg.sender, address(this), _tokenId);
+    IERC721(_itemContract).transferFrom(msg.sender, address(this), _tokenId);
     _marketOwner.transfer(LISTING_FEE);
-    _nftCount++;
+    _itemCount++;
 
-    _idToNFT[_tokenId] = NFT(
-      _nftContract,
+    _idToItem[_tokenId] = Item(
+      _itemContract,
       _tokenId, 
       payable(msg.sender),
       payable(address(this)),
       _price,
-      true
+      true,
+      false,
+      0
     );
 
-    emit NFTListed(_nftContract, _tokenId, msg.sender, address(this), _price);
+    emit ItemListed(_itemContract, _tokenId, msg.sender, address(this), _price);
   }
 
-  // Buy an NFT
-  function buyNft(address _nftContract, uint256 _tokenId) public payable nonReentrant {
-    NFT storage nft = _idToNFT[_tokenId];
-    require(msg.value >= nft.price, "Not enough ether to cover asking price");
+    // List item for rent on marketplace
+  function listItemForRent(address _itemContract, uint256 _tokenId, uint256 _price, uint256 rentSeconds) public payable nonReentrant {
+    require(_price > 0, "Price must be greater than 0.");
+    require(msg.value == LISTING_FEE, "Please remove value before listing item, listing fee is free.");
+
+    IERC721(_itemContract).transferFrom(msg.sender, address(this), _tokenId);
+    _marketOwner.transfer(LISTING_FEE);
+    _itemCount++;
+
+    _idToRent[_tokenId] = Rentable(
+      _itemContract,
+      _tokenId, 
+      payable(msg.sender),
+      payable(address(this)),
+      _price,
+      rentSeconds
+    );
+
+    emit ItemListedRent(_itemContract, _tokenId, msg.sender, address(this), _price, rentSeconds);
+  }
+
+
+  // Buy item
+  function buyItem(address _itemContract, uint256 _tokenId) public payable nonReentrant {
+    Item storage item = _idToItem[_tokenId];
+    require(msg.value >= item.price, "Insufficient funds to purchase item.");
 
     address payable buyer = payable(msg.sender);
-    payable(nft.seller).transfer(msg.value);
-    IERC721(_nftContract).transferFrom(address(this), buyer, nft.tokenId);
-    nft.owner = buyer;
-    nft.listed = false;
+    payable(item.seller).transfer(msg.value);
+    IERC721(_itemContract).transferFrom(address(this), buyer, item.tokenId);
+    item.owner = buyer;
+    item.listed = false;
 
-    _nftsSold++;
-    emit NFTSold(_nftContract, nft.tokenId, nft.seller, buyer, msg.value);
+    _itemsSold++;
+    emit ItemSold(_itemContract, item.tokenId, item.seller, buyer, msg.value);
   }
 
-  // Resell an NFT purchased from the marketplace
-  function resellNft(address _nftContract, uint256 _tokenId, uint256 _price) public payable nonReentrant {
+  // Rent item
+  function rentItem(address _itemContract, uint256 _tokenId) public payable nonReentrant {
+    Rentable storage rentable = _idToRent[_tokenId];
+    require(msg.value >= rentable.price, "Insufficient funds to rent item.");
+
+    address payable buyer = payable(msg.sender);
+    payable(rentable.seller).transfer(msg.value);
+
+    rentable.renter = buyer;
+    uint256 deadline = block.timestamp + rentable.duration;
+    _idToRent[_tokenId].duration = deadline;
+
+    _itemsSold++;
+    emit ItemRented(_itemContract, rentable.tokenId, rentable.seller, buyer, msg.value, rentable.duration);
+  }
+
+  // Recall rented item
+  function recallItem(uint256 _tokenId) public payable nonReentrant {
+    require(msg.sender == _idToRent[_tokenId].seller, "Must own the item to recall it from renter.");
+    require(block.timestamp >= _idToRent[_tokenId].duration, "Cannot recall item yet.");
+
+    _idToRent[_tokenId].renter = _idToRent[_tokenId].seller;
+
+    _itemsSold--;
+    delete _idToRent[_tokenId];
+  }
+
+
+  // Resell item
+  function resellItem(address _itemContract, uint256 _tokenId, uint256 _price) public payable nonReentrant {
     require(_price > 0, "Price must be at least 1 wei");
     require(msg.value == LISTING_FEE, "Not enough ether for listing fee");
 
-    IERC721(_nftContract).transferFrom(msg.sender, address(this), _tokenId);
+    IERC721(_itemContract).transferFrom(msg.sender, address(this), _tokenId);
 
-    NFT storage nft = _idToNFT[_tokenId];
-    nft.seller = payable(msg.sender);
-    nft.owner = payable(address(this));
-    nft.listed = true;
-    nft.price = _price;
+    Item storage item = _idToItem[_tokenId];
+    item.seller = payable(msg.sender);
+    item.owner = payable(address(this));
+    item.listed = true;
+    item.price = _price;
 
-    _nftsSold--;
-    emit NFTListed(_nftContract, _tokenId, msg.sender, address(this), _price);
+    _itemsSold--;
+    emit ItemListed(_itemContract, _tokenId, msg.sender, address(this), _price);
   }
 
-  function getListedNfts() public view returns (NFT[] memory) {
-    uint256 nftCount = _nftCount;
-    uint256 unsoldNftsCount = nftCount - _nftsSold;
+  function getListedItems() public view returns (Item[] memory) {
+    uint256 itemCount = _itemCount;
+    uint256 unsoldItemsCount = itemCount - _itemsSold;
 
-    NFT[] memory nfts = new NFT[](unsoldNftsCount);
-    uint nftsIndex = 0;
-    for (uint i = 0; i < nftCount; i++) {
-      if (_idToNFT[i + 1].listed) {
-        nfts[nftsIndex] = _idToNFT[i + 1];
-        nftsIndex++;
+    Item[] memory items = new Item[](unsoldItemsCount);
+    uint itemsIndex = 0;
+    for (uint i = 0; i < itemCount; i++) {
+      if (_idToItem[i + 1].listed) {
+        items[itemsIndex] = _idToItem[i + 1];
+        itemsIndex++;
       }
     }
-    return nfts;
+    return items;
   }
 
-  function getMyNfts() public view returns (NFT[] memory) {
-    uint nftCount = _nftCount;
-    uint myNftCount = 0;
-    for (uint i = 0; i < nftCount; i++) {
-      if (_idToNFT[i + 1].owner == msg.sender) {
-        myNftCount++;
+  function getMyItems() public view returns (Item[] memory) {
+    uint itemCount = _itemCount;
+    uint myItemCount = 0;
+    for (uint i = 0; i < itemCount; i++) {
+      if (_idToItem[i + 1].owner == msg.sender) {
+        myItemCount++;
       }
     }
 
-    NFT[] memory nfts = new NFT[](myNftCount);
-    uint nftsIndex = 0;
-    for (uint i = 0; i < nftCount; i++) {
-      if (_idToNFT[i + 1].owner == msg.sender) {
-        nfts[nftsIndex] = _idToNFT[i + 1];
-        nftsIndex++;
+    Item[] memory items = new Item[](myItemCount);
+    uint itemsIndex = 0;
+    for (uint i = 0; i < itemCount; i++) {
+      if (_idToItem[i + 1].owner == msg.sender) {
+        items[itemsIndex] = _idToItem[i + 1];
+        itemsIndex++;
       }
     }
-    return nfts;
+    return items;
   }
 
-  function getMyListedNfts() public view returns (NFT[] memory) {
-    uint nftCount = _nftCount;
-    uint myListedNftCount = 0;
-    for (uint i = 0; i < nftCount; i++) {
-      if (_idToNFT[i + 1].seller == msg.sender && _idToNFT[i + 1].listed) {
-        myListedNftCount++;
+  function getMyListedItems() public view returns (Item[] memory) {
+    uint itemCount = _itemCount;
+    uint myListedItemCount = 0;
+    for (uint i = 0; i < itemCount; i++) {
+      if (_idToItem[i + 1].seller == msg.sender && _idToItem[i + 1].listed) {
+        myListedItemCount++;
       }
     }
 
-    NFT[] memory nfts = new NFT[](myListedNftCount);
-    uint nftsIndex = 0;
-    for (uint i = 0; i < nftCount; i++) {
-      if (_idToNFT[i + 1].seller == msg.sender && _idToNFT[i + 1].listed) {
-        nfts[nftsIndex] = _idToNFT[i + 1];
-        nftsIndex++;
+    Item[] memory items = new Item[](myListedItemCount);
+    uint itemsIndex = 0;
+    for (uint i = 0; i < itemCount; i++) {
+      if (_idToItem[i + 1].seller == msg.sender && _idToItem[i + 1].listed) {
+        items[itemsIndex] = _idToItem[i + 1];
+        itemsIndex++;
       }
     }
-    return nfts;
+    return items;
   }
 }
