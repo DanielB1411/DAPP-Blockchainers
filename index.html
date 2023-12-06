@@ -185,8 +185,8 @@ top: 150px;
   <div class="container">
     <h1 id="title" class="col-sm-4"><b>Item Marketplace</b></h1>
     <button class="navbutton" onclick="showCreateWindow()"><span>Create Item</span></button>
-    <button class="navbutton" onclick="showBrowseWindow()"><span>Browse</span></button>
-    <button class="navbutton" onclick="showPortfolioWindow()"><span>Portfolio</span></button>
+    <button class="navbutton" onclick="getAllListedItems()"><span>Browse</span></button>
+    <button class="navbutton" onclick="getMyListedItems()"><span>Portfolio</span></button>
 
   </div>
 
@@ -244,31 +244,7 @@ top: 150px;
 
 
 
-    function showPortfolioWindow() {
-      // Assuming there is only one element with the class "jumbotron"
-      let jumbotronElement = document.querySelector('.jumbotron');
-
-      // Check if the element is found
-      if (jumbotronElement) {
-          jumbotronElement.innerHTML = `
-        <div class="grid-container">
-    
-        <!-- Rows -->
-        <div class="box">1</div>
-        <div class="box">2</div>
-        <div class="box">3</div>
-
-        <div class="box">4</div>
-        <div class="box">5</div>
-        <div class="box">6</div>
-        <button class="navbutton" onclick="getAllListedItems()"><span>showall</span></button>
-
-        
-      </div>
-            `;
-        }
-    }
-
+   
             
   function showCreateWindow() {
       // Assuming there is only one element with the class "jumbotron"
@@ -290,72 +266,55 @@ top: 150px;
       }
     }
 
+    function showBrowseWindow(data) {
+      let jumbotronElement = document.querySelector('.jumbotron');
 
-    function showBrowseWindow() {
-    // Assuming there is only one element with the class "jumbotron"
-    let jumbotronElement = document.querySelector('.jumbotron');
+      // Check if the element is found
+      if (jumbotronElement) {
+        // Clear existing content
+        jumbotronElement.innerHTML = '';
 
-    // Check if the element is found
-    if (jumbotronElement) {
-        jumbotronElement.innerHTML = `
-        <div class="grid-container">
-    
-        <!-- Rows -->
-        <div class="box">1</div>
-        <div class="box">2</div>
-        <div class="box">3</div>
+        // Create a grid container
+        const gridContainer = document.createElement('div');
+        gridContainer.classList.add('grid-container');
+        console.log(data);
 
-        <div class="box">4</div>
-        <div class="box">5</div>
-        <div class="box">6</div>
+        // Iterate through each item in the data array
+        data.forEach((item, index) => {
+          // Create a box for each item
+          const box = document.createElement('div');
+          box.classList.add('box');
 
-        <div class="box">7</div>
-        <div class="box">8</div>
-        <div class="box">9</div>
+          // Assuming item is an array with buyer, seller, and price
 
-        <div class="box">10</div>
-        <div class="box">11</div>
-        <div class="box">12</div>
+          // Set the content of the box
+          box.innerHTML = `
+            <strong>Item ${index + 1}</strong><br>
+            Buyer: ${item[2]}<br>
+            Seller: ${item[3]}<br>
+            Price: ${item[4]}
+          `;
 
-        <div class="box">13</div>
-        <div class="box">14</div>
-        <div class="box">15</div>
-        
-      </div>
-            `;
+          // Append the box to the grid container
+          gridContainer.appendChild(box);
+        });
+
+        // Append the grid container to the jumbotron
+        jumbotronElement.appendChild(gridContainer);
+      }
     }
-}
+
+
 
 
 async function getAllListedItems() {
-      // Get input values
-
-      try {
-        // Request account access if needed
-        await ethereum.request({ method: 'eth_requestAccounts' });
-        console.log("MetaMask is enabled!");
-      } catch (error) {
-        if (error.code === 4001) {
-          // User denied account access
-          console.log('User denied account access');
-          return;
-        } else {
-          // Handle other errors
-          console.error(error);
-          return;
-        }
-      }
-
-      const accounts = await ethereum.request({ method: 'eth_accounts' });
-      const userAddress = accounts[0];
-
-      // Prepare data to be sent in the request body
+      
+      const userAddress = '0x5642153eCB7E5642893b73CFA57A7048b6ccfC15';
       var requestData = {
         address: userAddress,
       };
 
       try {
-        // Send a POST request to your Express server
         const response = await fetch('/getAllListedItems', {
           method: 'POST',
           headers: {
@@ -369,14 +328,42 @@ async function getAllListedItems() {
         }
 
         const data = await response.json();
-        // Handle success response
         console.log('Item found successfully:', data);
+        showBrowseWindow(data.items)
         
-        console.log(data);
       } catch (error) {
-        // Handle error
         console.error('Error creating item:', error);
-        // You can add additional error handling logic here
+      }
+    }
+
+
+
+  async function getMyListedItems() {
+      
+      const userAddress = '0x5642153eCB7E5642893b73CFA57A7048b6ccfC15';
+      var requestData = {
+        address: userAddress,
+      };
+
+      try {
+        const response = await fetch('/getMyListedItems', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        console.log('Item found successfully:', data);
+        showBrowseWindow(data.items)
+        
+      } catch (error) {
+        console.error('Error creating item:', error);
       }
     }
 
@@ -433,28 +420,13 @@ async function getAllListedItems() {
       var address = document.getElementById('adress').value;
       var itemName = document.getElementById('name').value;
 
-      try {
-        // Request account access if needed
-        await ethereum.request({ method: 'eth_requestAccounts' });
-        console.log("MetaMask is enabled!");
-      } catch (error) {
-        if (error.code === 4001) {
-          // User denied account access
-          console.log('User denied account access');
-          return;
-        } else {
-          // Handle other errors
-          console.error(error);
-          return;
-        }
-      }
+     
 
-      const accounts = await ethereum.request({ method: 'eth_accounts' });
-      const userAddress = accounts[0];
+      
 
       // Prepare data to be sent in the request body
       var requestData = {
-        address: userAddress,
+        address: address,
         itemName: itemName
       };
 
@@ -475,7 +447,7 @@ async function getAllListedItems() {
         const data = await response.json();
         // Handle success response
         console.log('Item minted successfully:', data);
-        listItem(userAddress);
+        listItem(address);
         console.log(data);
       } catch (error) {
         // Handle error

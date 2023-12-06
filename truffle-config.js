@@ -1,9 +1,13 @@
 module.exports = {
   networks: {
     development: {
-      host: "localhost",
+      host: "127.0.0.1",
       port: 8545,
+<<<<<<< HEAD
       network_id: "1701834384963"
+=======
+      network_id: "*"
+>>>>>>> 00d24ed70f1bc149d8fb71a85737d0d20a29a7bf
     }
 
     // loc_dapp_dapp: {

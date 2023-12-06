@@ -782,11 +782,11 @@
 			]
 		},
 		"contracts/ClubBlockchainers.sol": {
-			"keccak256": "0x9dabb529ea0f655026ca9dffe90d05bbecee003d4749ef37c0682258eb061eca",
+			"keccak256": "0x51f09c3d0c4547b334942f6b44ca8ecd3a2921bb334244f0c29edbed37920792",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8463dfffa08c8a05b62478867b85a67b60c8c8c461fbd9ca13cf520cae8ca939",
-				"dweb:/ipfs/QmdThDYLzvDgqHNPbFnf5Dk6aTc2WFCjPZL5KVFEMULnsU"
+				"bzz-raw://4778d6a8b8d19c04d0c8cc04520c308e4f1c8b4ed965b09d7ffdc765bec0be7f",
+				"dweb:/ipfs/QmSmQvGKNW9RJNUdDDBL8gZxezDxPyXeFSy3yAjtwBW1pN"
 			]
 		}
 	},
