@@ -23,8 +23,10 @@ const web3 = new Web3(
     );
 
 
-// contract of marketplace
+// adress of marketplace
 const contractAddress = '0x9d6bAd04445BABB19D72CE7308Df07B4439b0d4B';
+
+// address of clubblockchainers
 const mintAdress = '0x7ca6fc0E2be6fbD1262144157b7eD740856E90e8';
 
 // Replace with your contract ABI
@@ -841,7 +843,6 @@ const minter = new web3.eth.Contract(mintAbi, mintAdress);
 
 
 
-//not in use
 app.post('/createItem', async (req, res) => {
 	try {
 		// Log specific values from the request body
@@ -1008,61 +1009,7 @@ app.post('/listItem', async (req, res) => {
 	}
   });
 
-app.post('/listItem', async (req, res) => {
-	try {
 
-		console.log("listing time:")
-
-		const userAddress = req.body.address;
-
-
-		const gasPrice = await web3.eth.getGasPrice();
-
-		const nonce = await web3.eth.getTransactionCount(userAddress);
-
-		
-		
-		const tx = {
-			from: userAddress,
-			to: contractAddress,
-			gasPrice: gasPrice,
-			gas: 1000000,
-			nonce: nonce,
-			value: 0,
-			data: marketplace.methods.listNft(mintAdress,req.body.token,req.body.price).encodeABI(),
-		};
-		
-		console.log("signing");
-		const signedTx = await web3.eth.accounts.signTransaction(tx, process.env.PRIVATE_KEY);
-		const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);if (receipt.status === '0x1') {
-			// the transaction was successful
-		  } else {
-			console.log('Revert Reason:', receipt);
-
-		  }
-
-		
-		receipt.transactionHash = receipt.transactionHash.toString();
-		receipt.blockNumber = receipt.blockNumber.toString();
-		receipt.gasUsed = receipt.gasUsed.toString();
-		receipt.cumulativeGasUsed = receipt.cumulativeGasUsed.toString();
-		receipt.status = receipt.status.toString();
-
-		console.log('Transaction Hash:', receipt.transactionHash);
-		console.log('Block Number:', receipt.blockNumber);
-		console.log('Gas Used:', receipt.gasUsed);
-		console.log('Cumulative Gas Used:', receipt.cumulativeGasUsed);
-		console.log('Contract Address:', receipt.contractAddress);
-		console.log('Status:', receipt.status);
-  
-
-        res.status(200).json({ 'transactionHash': receipt.transactionHash});
-		
-      
-	} catch (error) {
-	  res.status(500).json({ error: error.message });
-	}
-  });
 
 
 
