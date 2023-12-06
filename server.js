@@ -1063,11 +1063,6 @@ app.post('/listItem', async (req, res) => {
 	}
   });
 
-
-
-
-
-
   app.post('/getAllListedItems', async (req, res) => {
     try {
 		console.log("1")

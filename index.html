@@ -176,6 +176,19 @@ top: 150px;
       font-size: 16px;
     }
 
+    .box:hover {
+    transform: scale(1.05); 
+
+}
+    .buybox {
+      margin-left: 900px;
+      width: 35%;
+      margin-top: -140px;
+    }
+    .col-1-4.pad-right {
+      position: relative;
+      margin-left: 25%;
+}
 
 
 
@@ -210,42 +223,66 @@ top: 150px;
 
   </div>
   <script src="https://cdn.jsdelivr.net/npm/web3@1.6.0/dist/web3.min.js"></script>
-
+  <script>
+    // Check if MetaMask is installed
+    if (typeof window.ethereum !== 'undefined') {
+        // Request account access
+        window.ethereum
+            .request({ method: 'eth_requestAccounts' })
+            .catch((error) => {
+                console.error('Error connecting to MetaMask:', error);
+            });
+    } else {
+        console.log('MetaMask is not installed. Please install MetaMask.');
+    }
+  </script>
   <script>
 
-    function checkServerOutputFile() {
-      return new Promise((resolve, reject) => {
-        const check = () => {
-          fetch('/checkOutputFile')
-            .then(response => response.json())
-            .then(data => {
-              if (data.status === 'success') {
-                console.log('Desired line found on the server');
-                console.log('Transaction Hash:', data.info.transactionHash);
-                console.log('Contract Address:', data.info.contractAddress);
-                console.log('Total Cost:', data.info.totalCost);
-                resolve(data.info); // Resolve with the extracted information
-              } else {
-                console.log('Line not found on the server. Retrying in 5 seconds...');
-                setTimeout(check, 5000); // Retry after 5 seconds
-              }
+
+function get_adress() {
+    return new Promise((resolve, reject) => {
+        window.ethereum
+            .request({ method: 'eth_accounts' })
+            .then(([userAddress]) => {
+                console.log(userAddress);
+                resolve(userAddress);
             })
-            .catch(error => {
-              console.error('Error checking server output file:', error);
-              console.log('Retrying in 5 seconds...');
-              setTimeout(check, 5000); // Retry after 5 seconds
+            .catch((error) => {
+                console.error('Error getting user address:', error);
+                reject(error);
             });
-        };
+    });
+}
 
-        // Start the initial check
-        check();
-      });
-    }
+  
+
+  function showBuyWindow(box) {
+    let jumbotronElement = document.querySelector('.jumbotron');
+
+      // Check if the element is found
+      if (jumbotronElement) {
+        jumbotronElement.innerHTML = `
+          <div class="row control overhide">
+            <div class="col-1-4 pad-right">
+              <label for="name">Value</label>
+              <input id="name" type="text" data-validate="clampLength" />
+              <div id="create-item" class="button" onclick="buyItem()" ><i class="icon-folder-plus"></i> BUY</div>
+            </div>
+          </div>
+        `;
+      }
+      box.classList.add('buybox');
+      jumbotronElement.appendChild(box);
+
+  }
+
+  async function buyItem() {
 
 
 
-   
-            
+  }
+
+
   function showCreateWindow() {
       // Assuming there is only one element with the class "jumbotron"
       let jumbotronElement = document.querySelector('.jumbotron');
@@ -255,8 +292,6 @@ top: 150px;
         jumbotronElement.innerHTML = `
           <div class="row control overhide">
             <div class="col-1-4 pad-right">
-              <label for="adress">Address..</label>
-              <input id="adress" type="text" maxlength="45" placeholder="required" data-validate="blankName" />
               <label for="name">Name of Item?</label>
               <input id="name" type="text" data-validate="clampLength" />
               <div id="create-item" class="button" onclick="createItem()" ><i class="icon-folder-plus"></i> Create</div>
@@ -283,17 +318,19 @@ top: 150px;
         data.forEach((item, index) => {
           // Create a box for each item
           const box = document.createElement('div');
+                  
           box.classList.add('box');
 
-          // Assuming item is an array with buyer, seller, and price
-
-          // Set the content of the box
+    
           box.innerHTML = `
             <strong>Item ${index + 1}</strong><br>
-            Buyer: ${item[2]}<br>
-            Seller: ${item[3]}<br>
+            Seller: ${item[2]}<br>
             Price: ${item[4]}
           `;
+
+          box.onclick = function() {
+          showBuyWindow(box);
+          };  
 
           // Append the box to the grid container
           gridContainer.appendChild(box);
@@ -309,7 +346,7 @@ top: 150px;
 
 async function getAllListedItems() {
       
-      const userAddress = '0x5642153eCB7E5642893b73CFA57A7048b6ccfC15';
+      const userAddress = await get_adress();
       var requestData = {
         address: userAddress,
       };
@@ -340,7 +377,7 @@ async function getAllListedItems() {
 
   async function getMyListedItems() {
       
-      const userAddress = '0x5642153eCB7E5642893b73CFA57A7048b6ccfC15';
+      const userAddress = await get_adress();
       var requestData = {
         address: userAddress,
       };
@@ -417,13 +454,8 @@ async function getAllListedItems() {
 
    async function createItem() {
       // Get input values
-      var address = document.getElementById('adress').value;
       var itemName = document.getElementById('name').value;
-
-     
-
-      
-
+      const address = await get_adress();
       // Prepare data to be sent in the request body
       var requestData = {
         address: address,
