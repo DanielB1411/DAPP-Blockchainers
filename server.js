@@ -1049,18 +1049,14 @@ app.post('/mintItem', async (req, res) => {
 app.post('/listItem', async (req, res) => {
 	try {
 		const userAddress = req.body.address;
-		const receipt = await marketplace.methods.listItem(mintAdress,req.body.token +3 + 2,req.body.price).send({
+		const receipt = await marketplace.methods.listItem(mintAdress,req.body.token,req.body.price).send({
 			from: userAddress,
 			gas: 1000000,
 			gasPrice: 10000000000,
 			value:0
-		});;
-
-		
+		});	
 		console.log('Transaction Hash: ' + receipt.transactionHash);
         res.status(200).json({ 'transactionHash': receipt.transactionHash});
-
-		
       
 	} catch (error) {
 	  res.status(500).json({ error: error.message });
