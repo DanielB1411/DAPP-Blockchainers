@@ -18,11 +18,7 @@ app.use(express.json());
 
 
 const web3 = new Web3(
-<<<<<<< HEAD
-	new Web3.providers.HttpProvider("localhost:8545"),
-=======
 	new Web3.providers.HttpProvider('http://localhost:8545'),
->>>>>>> 00d24ed70f1bc149d8fb71a85737d0d20a29a7bf
 );
 
 
