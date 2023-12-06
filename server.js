@@ -20,7 +20,7 @@ const infuraUrl = 'https://goerli.infura.io/v3/0c0d8ccd8f2a44af806fcba72afae84f'
 
 const web3 = new Web3(
 	new Web3.providers.HttpProvider(infuraUrl),
-    );
+);
 
 
 // adress of marketplace
