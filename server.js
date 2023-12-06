@@ -503,8 +503,6 @@ const contractAbi = [
 	}
 ]
 
-
-
 const mintAbi =[
 	{
 		"inputs": [
@@ -1013,30 +1011,22 @@ const marketplace = new web3.eth.Contract(contractAbi, contractAddress);
 const minter = new web3.eth.Contract(mintAbi, mintAdress);
 
 
-
-
-
-
 app.post('/mintItem', async (req, res) => {
     try {
-
 
 		const userAddress = req.body.address;
 		const receipt = await minter.methods.mint(req.body.itemName).send({
 			from: userAddress,
 			gas: 1000000,
 			gasPrice: 10000000000,
-		});;
+		});
+
+		mintAdress.on('ItemMinted', function(event){
+			console.log('Transaction Hash: ' + receipt.transactionHash);
+        	res.status(200).json({'transactionHash': event.transactionHash, 'itemName': event.args[1], 'tokenID': event.args[0]});
+		});
 
 		
-		console.log('Transaction Hash: ' + receipt.transactionHash);
-
-
-
- 
-
-        res.status(200).json({ 'transactionHash': receipt.transactionHash});
-
     } catch (error) {
         console.error('Error during minting:', error);
         res.status(500).json({ success: false, error: error.message });
@@ -1044,28 +1034,24 @@ app.post('/mintItem', async (req, res) => {
 });
 
  
-
 // API endpoint to fetch the price
 app.post('/listItem', async (req, res) => {
 	try {
 		const userAddress = req.body.address;
-		const receipt = await marketplace.methods.listItem(mintAdress,req.body.token,req.body.price).send({
+		const receipt = await marketplace.methods.listItem(mintAdress, req.body.token, req.body.price).send({
 			from: userAddress,
 			gas: 1000000,
 			gasPrice: 10000000000,
-			value:0
-		});	
+			value: req.body.price
+		});
+
 		console.log('Transaction Hash: ' + receipt.transactionHash);
-        res.status(200).json({ 'transactionHash': receipt.transactionHash});
-      
+        res.status(200).json({ 'transactionHash': receipt.transactionHash, 'token': req.body.token, 'price': req.body.price});
+
 	} catch (error) {
 	  res.status(500).json({ error: error.message });
 	}
   });
-
-
-
-
 
 
   app.post('/getAllListedItems', async (req, res) => {
@@ -1109,6 +1095,25 @@ app.post('/getMyListedItems', async (req, res) => {
         res.status(200).json({ items: extracted_result});  // Use "items" as the property name
 
             } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+app.post('/buyItem', async (req, res) => {
+    try {
+
+		const result = await marketplace.methods.buyItem(mintAdress, req.body.token).send({
+			from: req.body.address,
+			gas: 1000000,
+			gasPrice: 10000000000,
+			value: req.body.value
+		});
+
+		console.log('Transaction Hash: ' + receipt.transactionHash);
+        res.status(200).json({ 'transactionHash': receipt.transactionHash});
+
+        } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
